@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootShop - Cửa hàng đồ bóng đá</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <div class="logo-icon">⚽</div>
+                    <div class="logo-text">
+                        <h1>FootShop</h1>
+                        <p>Đồ bóng đá chính hãng</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="nav" id="mainNav">
+                    <a href="#home">Trang chủ</a>
+                    <a href="#products">Sản phẩm</a>
+                    <a href="#sale">Khuyến mãi</a>
+                    <a href="#contact">Liên hệ</a>
+                </nav>
+
+                <!-- Header Icons -->
+                <div class="header-icons">
+                    <!-- Search -->
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button class="icon-btn" onclick="handleSearch()">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Wishlist -->
+                    <button class="icon-btn">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </button>
+
+                    <!-- User -->
+                    <button class="icon-btn">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </button>
+
+                    <!-- Cart -->
+                    <button class="icon-btn cart-btn" id="cartBtn">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="icon-btn menu-toggle" id="menuToggle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2>Trang bị cho giấc mơ bóng đá</h2>
+                    <p>Khuyến mãi lên đến 40% cho tất cả sản phẩm mùa đông</p>
+                    <button class="btn-primary" onclick="scrollToProducts()">
+                        Mua ngay
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <h3 class="section-title">Danh mục sản phẩm</h3>
+            <div class="categories-grid">
+                <div class="category-card" onclick="filterByCategory('Giày đá bóng')">
+                    <div class="category-icon">👟</div>
+                    <h4>Giày đá bóng</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Áo đấu')">
+                    <div class="category-icon">👕</div>
+                    <h4>Áo đấu</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Quần áo')">
+                    <div class="category-icon">🩳</div>
+                    <h4>Quần áo</h4>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Phụ kiện')">
+                    <div class="category-icon">🧤</div>
+                    <h4>Phụ kiện</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="products-header">
+                <h3 class="section-title">Sản phẩm nổi bật</h3>
+                <button class="btn-reset" onclick="resetFilter()">Xem tất cả</button>
+            </div>
+            <div class="products-grid" id="productsContainer">
+                <!-- Products will be loaded here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Về FootShop</h4>
+                    <ul>
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Tin tức</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                    </ul>    
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ khách hàng</h4>
+                    <ul>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                        <li><a href="#">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Liên hệ</h4>
+                    <ul>
+                        <li>📞 Hotline: 1900 xxxx</li>
+                        <li>✉️ Email: support@footshop.vn</li>
+                        <li>📍 Địa chỉ: Hà Nội, Việt Nam</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Theo dõi chúng tôi</h4>
+                    <ul>
+                        <li><a href="https://www.facebook.com/PhucGiaoSu05/">Facebook</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FootShop. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div class="notification" id="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
