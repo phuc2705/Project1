@@ -1,10 +1,6 @@
--- === GIAI ĐOẠN 3: MYSQL DATABASE ===
-
--- Tạo database
 CREATE DATABASE IF NOT EXISTS footshop_db;
 USE footshop_db;
 
--- Tạo bảng sản phẩm
 CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -31,7 +27,6 @@ UPDATE products
 SET price = '3.100.000'
 WHERE id = 5;
 
--- Thêm dữ liệu mẫu (INSERT)
 INSERT INTO products (name, price, image, category, badge, badge_class, description, stock) VALUES
 ('Giày Nike Mercurial', '2.990.000', 'https://images.unsplash.com/photo-1556906781-9a412961c28c?w=500&h=500&fit=crop', 'Giày đá bóng', 'HOT', '', 'Giày đá bóng chuyên nghiệp Nike Mercurial với công nghệ mới nhất', 50),
 ('Áo đấu Manchester United', '890.000', 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb253?w=500&h=500&fit=crop', 'Áo đấu', 'MỚI', 'new', 'Áo đấu chính thức Manchester United mùa giải mới', 100),
@@ -56,7 +51,6 @@ INSERT INTO categories (name, icon) VALUES
 ('Quần áo', '🩳'),
 ('Phụ kiện', '🧤');
 
--- Tạo bảng người dùng (tùy chọn - để mở rộng sau)
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
@@ -69,7 +63,6 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tạo bảng đơn hàng (tùy chọn - để mở rộng sau)
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -80,7 +73,6 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Tạo bảng chi tiết đơn hàng
 CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -91,47 +83,35 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- === CÁC TRUY VẤN SQL THƯỜNG DÙNG ===
 
--- SELECT: Lấy tất cả sản phẩm
 SELECT * FROM products ORDER BY created_at DESC;
 
--- SELECT với điều kiện: Lấy sản phẩm theo danh mục
 SELECT * FROM products WHERE category = 'Giày đá bóng';
 
--- SELECT với LIKE: Tìm kiếm sản phẩm
 SELECT * FROM products WHERE name LIKE '%Nike%';
 
--- SELECT với JOIN: Lấy sản phẩm kèm danh mục
 SELECT p.*, c.icon 
 FROM products p
 LEFT JOIN categories c ON p.category = c.name;
 
--- UPDATE: Cập nhật tồn kho
 UPDATE products SET stock = 100 WHERE id = 1;
 
--- UPDATE: Cập nhật giá
 UPDATE products SET price = '3.500.000' WHERE id = 4;
 
--- DELETE: Xóa sản phẩm
 DELETE FROM products WHERE id = 1;
 
--- COUNT: Đếm số lượng sản phẩm theo danh mục
 SELECT category, COUNT(*) as total 
 FROM products 
 GROUP BY category;
 
--- SUM: Tính tổng giá trị tồn kho
 SELECT category, SUM(CAST(REPLACE(price, '.', '') AS UNSIGNED) * stock) as total_value
 FROM products
 GROUP BY category;
 
--- AVG: Giá trung bình
 SELECT category, AVG(CAST(REPLACE(price, '.', '') AS UNSIGNED)) as avg_price
 FROM products
 GROUP BY category;
 
--- Sản phẩm bán chạy (giả sử có bảng order_items)
 SELECT p.name, SUM(oi.quantity) as total_sold
 FROM products p
 JOIN order_items oi ON p.id = oi.product_id

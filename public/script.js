@@ -1,34 +1,24 @@
-// === GIAI ĐOẠN 1: JAVASCRIPT CỐT LÕI ===
-// API URL
 const API_URL = 'http://localhost:3000/api/products';
 
-// State Management
 let cart = [];
 let allProducts = [];
 let currentFilter = '';
 
-// === XỬ LÝ BẤT ĐỒNG BỘ VỚI ASYNC/AWAIT ===
-// Hàm lấy sản phẩm từ API (Fetch API)
 async function fetchProducts(category = '', search = '') {
     try {
         showLoading();
-        
-        // Xây dựng URL với query parameters
         const params = new URLSearchParams();
         if (category) params.append('category', category);
         if (search) params.append('search', search);
         
         const url = params.toString() ? `${API_URL}?${params}` : API_URL;
-        
-        // Fetch API - Lấy dữ liệu từ server
+
         const response = await fetch(url);
         
-        // Kiểm tra response
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // Parse JSON
         const data = await response.json();
         
         if (data.success) {
@@ -46,8 +36,6 @@ async function fetchProducts(category = '', search = '') {
     }
 }
 
-// === XỬ LÝ MẢNG VỚI MAP, FILTER ===
-// Render products sử dụng map()
 function renderProducts(products) {
     const container = document.getElementById('productsContainer');
     
@@ -61,7 +49,6 @@ function renderProducts(products) {
         return;
     }
     
-    // Sử dụng map() để tạo HTML cho từng sản phẩm
     const productsHTML = products.map(product => `
         <div class="product-card">
             ${product.badge ? `<span class="product-badge ${product.badge_class || ''}">${product.badge}</span>` : ''}
@@ -91,20 +78,16 @@ function renderProducts(products) {
     container.innerHTML = productsHTML;
 }
 
-// Filter products sử dụng filter()
 function filterProducts(category) {
-    // Sử dụng filter() để lọc sản phẩm
     const filtered = allProducts.filter(product => 
         product.category === category
     );
     renderProducts(filtered);
 }
 
-// Search products sử dụng filter()
 function searchProducts(keyword) {
     const lowerKeyword = keyword.toLowerCase();
     
-    // Sử dụng filter() để tìm kiếm
     const results = allProducts.filter(product => 
         product.name.toLowerCase().includes(lowerKeyword) ||
         product.category.toLowerCase().includes(lowerKeyword)
@@ -113,9 +96,7 @@ function searchProducts(keyword) {
     renderProducts(results);
 }
 
-// === XỬ LÝ GIỎ HÀNG ===
 function addToCart(productId) {
-    // Tìm sản phẩm từ mảng
     const product = allProducts.find(p => p.id === productId);
     
     if (!product) {
@@ -128,7 +109,6 @@ function addToCart(productId) {
         return;
     }
     
-    // Thêm vào giỏ hàng
     cart.push(product);
     updateCartCount();
     showNotification(`Đã thêm "${product.name}" vào giỏ hàng!`, 'success');
@@ -145,13 +125,11 @@ function viewCart() {
         return;
     }
     
-    // Tính tổng tiền sử dụng reduce()
     const total = cart.reduce((sum, item) => {
         const price = parseInt(item.price.replace(/\./g, ''));
         return sum + price;
     }, 0);
     
-    // Tạo nội dung giỏ hàng sử dụng map()
     const cartContent = cart.map((item, index) => 
         `${index + 1}. ${item.name} - ${item.price}đ`
     ).join('\n');
@@ -159,7 +137,6 @@ function viewCart() {
     alert(`Giỏ hàng của bạn:\n\n${cartContent}\n\nTổng cộng: ${total.toLocaleString('vi-VN')}đ`);
 }
 
-// === UI FUNCTIONS ===
 function showLoading() {
     const container = document.getElementById('productsContainer');
     container.innerHTML = `
@@ -171,7 +148,6 @@ function showLoading() {
 }
 
 function hideLoading() {
-    // Loading sẽ được thay thế bởi products
 }
 
 function showError(message) {
@@ -197,7 +173,6 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// === EVENT HANDLERS ===
 function filterByCategory(category) {
     currentFilter = category;
     fetchProducts(category);
@@ -226,18 +201,13 @@ function scrollToProducts() {
     }
 }
 
-// === EVENT LISTENERS ===
 document.addEventListener('DOMContentLoaded', function() {
-    // Load sản phẩm khi trang vừa mở
     fetchProducts();
-    
-    // Cart button
     const cartBtn = document.getElementById('cartBtn');
     if (cartBtn) {
         cartBtn.addEventListener('click', viewCart);
     }
     
-    // Search on Enter key
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
@@ -247,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Smooth scroll cho navigation
     document.querySelectorAll('.nav a').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -263,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Mobile menu toggle
     const menuToggle = document.getElementById('menuToggle');
     const nav = document.getElementById('mainNav');
     
@@ -274,18 +242,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// === UTILITY FUNCTIONS ===
-// Format số tiền
 function formatPrice(price) {
     return parseInt(price.replace(/\./g, '')).toLocaleString('vi-VN');
 }
 
-// Kiểm tra sản phẩm có sẵn
 function isProductAvailable(product) {
     return product.stock > 0;
 }
 
-// Lấy sản phẩm theo ID
 function getProductById(id) {
     return allProducts.find(product => product.id === id);
 }

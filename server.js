@@ -1,4 +1,4 @@
-// === GIAI ĐOẠN 2: NODE.JS & EXPRESS ===
+
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
@@ -7,13 +7,13 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// === MIDDLEWARE ===
-app.use(cors()); // Cho phép Frontend gọi API
-app.use(express.json()); // Parse JSON body
-app.use(express.urlencoded({ extended: true })); // Parse form data
-app.use(express.static('public')); // Serve static files
 
-// === KẾT NỐI MYSQL (Giai đoạn 3) ===
+app.use(cors()); 
+app.use(express.json()); // Parse JSON body
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.static('public')); 
+
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -24,7 +24,7 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Test kết nối
+
 pool.getConnection()
     .then(connection => {
         console.log('✅ Kết nối MySQL thành công!');
@@ -34,9 +34,7 @@ pool.getConnection()
         console.error('❌ Lỗi kết nối MySQL:', err);
     });
 
-// === RESTFUL API ROUTES ===
 
-// GET: Lấy tất cả sản phẩm
 app.get('/api/products', async (req, res) => {
     try {
         const { category, search } = req.query;
@@ -44,13 +42,11 @@ app.get('/api/products', async (req, res) => {
         let query = 'SELECT * FROM products WHERE 1=1';
         const params = [];
         
-        // Lọc theo danh mục
         if (category) {
             query += ' AND category = ?';
             params.push(category);
         }
         
-        // Tìm kiếm
         if (search) {
             query += ' AND (name LIKE ? OR category LIKE ?)';
             params.push(`%${search}%`, `%${search}%`);
@@ -76,7 +72,7 @@ app.get('/api/products', async (req, res) => {
     }
 });
 
-// GET: Lấy sản phẩm theo ID
+
 app.get('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -108,12 +104,10 @@ app.get('/api/products/:id', async (req, res) => {
     }
 });
 
-// POST: Thêm sản phẩm mới
 app.post('/api/products', async (req, res) => {
     try {
         const { name, price, image, category, badge, badge_class, description, stock } = req.body;
         
-        // Validation
         if (!name || !price || !image || !category) {
             return res.status(400).json({
                 success: false,
@@ -143,7 +137,6 @@ app.post('/api/products', async (req, res) => {
     }
 });
 
-// PUT: Cập nhật sản phẩm
 app.put('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -179,7 +172,6 @@ app.put('/api/products/:id', async (req, res) => {
     }
 });
 
-// DELETE: Xóa sản phẩm
 app.delete('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -211,7 +203,6 @@ app.delete('/api/products/:id', async (req, res) => {
     }
 });
 
-// GET: Lấy danh sách danh mục
 app.get('/api/categories', async (req, res) => {
     try {
         const [rows] = await pool.execute('SELECT * FROM categories ORDER BY id');
@@ -232,7 +223,6 @@ app.get('/api/categories', async (req, res) => {
     }
 });
 
-// Health check
 app.get('/api/health', (req, res) => {
     res.json({
         success: true,
@@ -241,7 +231,6 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// 404 Handler
 app.use((req, res) => {
     res.status(404).json({
         success: false,
@@ -249,7 +238,6 @@ app.use((req, res) => {
     });
 });
 
-// Error Handler
 app.use((err, req, res, next) => {
     console.error('Error:', err.stack);
     res.status(500).json({
@@ -259,17 +247,13 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Khởi động server
 app.listen(PORT, () => {
-    console.log('=================================');
-    console.log(`🚀 Server đang chạy tại:`);
-    console.log(`   http://localhost:${PORT}`);
-    console.log(`📡 API endpoint:`);
-    console.log(`   http://localhost:${PORT}/api/products`);
-    console.log('=================================');
+    console.log(`Server đang chạy tại:`);
+    console.log(`http://localhost:${PORT}`);
+    console.log(`API endpoint:`);
+    console.log(`http://localhost:${PORT}/api/products`);
 });
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
     console.log('\n🛑 Đang dừng server...');
     await pool.end();
